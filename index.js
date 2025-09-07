@@ -75,21 +75,24 @@ app.post("/openai", async (req, res) => {
 });
 
 
-// Google Gemini
-app.post("/gemini", async (req, res) => {
+// Gemini - Flash (Key #1)
+app.post("/gemini/flash", async (req, res) => {
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAagbghJPnpO0UyHCZxmYTIRGNGaFHnezE`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [{
-          role: "user",
-          parts: [{ text: req.body.prompt || "Hello Gemini!" }]
-        }]
-      })
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAagbghJPnpO0UyHCZxmYTIRGNGaFHnezE`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: req.body.prompt || "Hello Gemini Flash (Key 1)!" }]
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
     res.json(data);
@@ -97,6 +100,60 @@ app.post("/gemini", async (req, res) => {
     res.status(500).send(err.toString());
   }
 });
+
+// Gemini - Pro (Google One Pro Key)
+app.post("/gemini/pro", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=AIzaSyDv7m567wxUprw5Y10eCm52ySlv5TNS6A8`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: req.body.prompt || "Hello Gemini Pro!" }]
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).send(err.toString());
+  }
+});
+
+// Gemini - Flash (Backup Key #2)
+app.post("/gemini/flash2", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAagbghJPnpO0UyHCZxmYTIRGNGaFHnezE`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: req.body.prompt || "Hello Gemini Flash (Key 2)!" }]
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).send(err.toString());
+  }
+});
+
+
 
 
 app.listen(3000, () => console.log("Proxy running on port 3000"));
