@@ -33,14 +33,14 @@ app.use(express.json()); // add once for JSON body parsing
 
 app.post("/deepseek", async (req, res) => {
   try {
-    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer sk-8f4e5c812da64b86b1aa25306c37870a`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "deepseek-chat", // adjust if needed
+        model: "deepseek-chat",
         messages: req.body.messages || [{ role: "user", content: "Hello DeepSeek!" }]
       })
     });
@@ -62,7 +62,7 @@ app.post("/openai", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // or "gpt-4o" depending on your quota
+        model: "gpt-4o-mini",
         messages: req.body.messages || [{ role: "user", content: "Hello OpenAI!" }]
       })
     });
@@ -73,6 +73,7 @@ app.post("/openai", async (req, res) => {
     res.status(500).send(err.toString());
   }
 });
+
 
 // Google Gemini
 app.post("/gemini", async (req, res) => {
