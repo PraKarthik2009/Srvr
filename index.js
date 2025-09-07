@@ -63,7 +63,7 @@ app.post("/deepseek", (req, res) =>
     req, res,
     url: "https://api.deepseek.com/chat/completions",
     headers: {
-      "Authorization": `Bearer sk-8f4e5c812da64b86b1aa25306c37870a`,
+      "Authorization": `Bearer sk-983f729cb0ba4b1b974d546964190e1f`,
       "Content-Type": "application/json"
     },
     payload: {
@@ -79,7 +79,7 @@ app.post("/openai", (req, res) =>
     req, res,
     url: "https://api.openai.com/v1/chat/completions",
     headers: {
-      "Authorization": `Bearer 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`,
+      "Authorization": `Bearer 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`,
       "Content-Type": "application/json"
     },
     payload: {
