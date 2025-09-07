@@ -60,41 +60,6 @@ async function aiProxy({
   }
 }
 
-// --- DeepSeek ---
-app.post("/deepseek", (req, res) =>
-  aiProxy({
-    req,
-    res,
-    url: "https://api.deepseek.com/chat/completions",
-    headers: {
-      Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    payload: {
-      model: "deepseek-chat",
-      messages:
-        req.body.messages || [{ role: "user", content: "Hello DeepSeek!" }],
-    },
-  })
-);
-
-// --- OpenAI ---
-app.post("/openai", (req, res) =>
-  aiProxy({
-    req,
-    res,
-    url: "https://api.openai.com/v1/chat/completions",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    payload: {
-      model: "gpt-4o-mini",
-      messages:
-        req.body.messages || [{ role: "user", content: "Hello OpenAI!" }],
-    },
-  })
-);
 
 // --- Gemini helper ---
 function geminiBody(prompt) {
