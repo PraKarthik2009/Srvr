@@ -153,7 +153,109 @@ app.post("/gemini/flash2", async (req, res) => {
   }
 });
 
+app.post("/gemini", async (req, res) => {
+  try {
+    const prompt = req.body.prompt || "Hello Gemini!";
+    
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDl66cVQBpGrOiMJ5tdOsSK1MY50v45bXw",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: prompt }],
+            },
+          ],
+        }),
+      }
+    );
 
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Gemini error:", err);
+    res.status(500).json({ error: err.toString() });
+  }
+});
+// Gemini 2.5 - Flash
+app.post("/gemini/flash25", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=AIzaSyDv7m567wxUprw5Y10eCm52ySlv5TNS6A8`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: req.body.prompt || "Hello Gemini 2.5 Flash!" }]
+            }
+          ]
+        })
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).send(err.toString());
+  }
+});
 
+// Gemini 2.5 - Pro
+app.post("/gemini/pro25", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-latest:generateContent?key=AIzaSyDv7m567wxUprw5Y10eCm52ySlv5TNS6A8`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: req.body.prompt || "Hello Gemini 2.5 Pro!" }]
+            }
+          ]
+        })
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).send(err.toString());
+  }
+});
+
+// Gemini 2.5 - Default (if you want a "main AI" endpoint)
+app.post("/gemini/25", async (req, res) => {
+  try {
+    const prompt = req.body.prompt || "Hello Gemini 2.5!";
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=AIzaSyDv7m567wxUprw5Y10eCm52ySlv5TNS6A8`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: prompt }]
+            }
+          ]
+        })
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.toString() });
+  }
+});
 
 app.listen(3000, () => console.log("Proxy running on port 3000"));
