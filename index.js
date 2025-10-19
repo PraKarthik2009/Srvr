@@ -28,6 +28,29 @@ app.get("/proxy", async (req, res) => {
     res.status(500).send(err.toString());
   }
 });
+
+// Hyperbeam - Delete session
+app.post("/hyperbeam/delete", async (req, res) => {
+  try {
+    const sessionId = req.body.session_id;
+    if (!sessionId) return res.status(400).send("Missing session_id");
+
+    const response = await fetch(`https://engine.hyperbeam.com/v0/vm/${sessionId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Hyperbeam delete error:", err);
+    res.status(500).send(err.toString());
+  }
+});
+
 // Hyperbeam - Create session
 app.post("/hyperbeam/create", async (req, res) => {
   try {
