@@ -31,7 +31,6 @@ app.get("/proxy", async (req, res) => {
 // Hyperbeam - Create session
 app.post("/hyperbeam/create", async (req, res) => {
   try {
-    // Optional: allow passing a URL to pre-load
     const targetUrl = req.body.url || "https://example.com";
 
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
@@ -48,13 +47,14 @@ app.post("/hyperbeam/create", async (req, res) => {
     });
 
     const data = await response.json();
-    // This will return session info including the iframe embed URL
+    console.log("Hyperbeam API response:", data); // <-- log raw response
     res.json(data);
   } catch (err) {
     console.error("Hyperbeam error:", err);
     res.status(500).send(err.toString());
   }
 });
+
 
 // --- Generic AI Proxy Handler ---
 async function aiProxy({
