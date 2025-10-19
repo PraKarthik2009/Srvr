@@ -28,6 +28,33 @@ app.get("/proxy", async (req, res) => {
     res.status(500).send(err.toString());
   }
 });
+// Hyperbeam - Create session
+app.post("/hyperbeam/create", async (req, res) => {
+  try {
+    // Optional: allow passing a URL to pre-load
+    const targetUrl = req.body.url || "https://example.com";
+
+    const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "my-session",
+        size: "small",
+        url: targetUrl
+      }),
+    });
+
+    const data = await response.json();
+    // This will return session info including the iframe embed URL
+    res.json(data);
+  } catch (err) {
+    console.error("Hyperbeam error:", err);
+    res.status(500).send(err.toString());
+  }
+});
 
 // --- Generic AI Proxy Handler ---
 async function aiProxy({
