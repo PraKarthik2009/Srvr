@@ -51,10 +51,19 @@ app.post("/hyperbeam/delete", async (req, res) => {
   }
 });
 
-// Hyperbeam - Create session
+// ✅ Hyperbeam - Create or restore session (profile-based)
 app.post("/hyperbeam/create", async (req, res) => {
   try {
-    const targetUrl = req.body.url || "https://example.com";
+    const profileId = req.body.profile_id || null; // from frontend (clipboard/cookie)
+
+    // payload for Hyperbeam API
+    const payload = {
+      name: "persistent-session",
+      size: "small",
+    };
+
+    // if profile_id provided, attach it to reuse the same environment
+    if (profileId) payload.profile_id = profileId;
 
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
@@ -62,22 +71,37 @@ app.post("/hyperbeam/create", async (req, res) => {
         "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: "my-session",
-        size: "small",
-        url: targetUrl
-      }),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
-    console.log("Hyperbeam API response:", data); // <-- log raw response
+    console.log("Hyperbeam session create response:", data);
     res.json(data);
   } catch (err) {
-    console.error("Hyperbeam error:", err);
+    console.error("Hyperbeam create error:", err);
     res.status(500).send(err.toString());
   }
 });
 
+// ✅ Hyperbeam - Create profile (unchanged)
+app.post("/hyperbeam/profile/create", async (req, res) => {
+  try {
+    const name = req.body.name || "persistent-default";
+    const response = await fetch("https://engine.hyperbeam.com/v0/profile", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Profile create error:", err);
+    res.status(500).send(err.toString());
+  }
+});
 
 // --- Generic AI Proxy Handler ---
 async function aiProxy({
