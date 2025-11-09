@@ -87,6 +87,7 @@ app.post("/hyperbeam/create", async (req, res) => {
 app.post("/hyperbeam/profile/create", async (req, res) => {
   try {
     const name = req.body.name || "persistent-default";
+
     const response = await fetch("https://engine.hyperbeam.com/v0/profile", {
       method: "POST",
       headers: {
@@ -95,14 +96,21 @@ app.post("/hyperbeam/profile/create", async (req, res) => {
       },
       body: JSON.stringify({ name }),
     });
-    const data = await response.json();
-    res.json(data);
+
+    const text = await response.text(); // read raw text first
+    let data;
+    try {
+      data = JSON.parse(text); // try parse JSON
+    } catch {
+      data = { raw: text, message: "Non-JSON or empty response from Hyperbeam" };
+    }
+
+    res.status(response.status).json(data);
   } catch (err) {
     console.error("Profile create error:", err);
-    res.status(500).send(err.toString());
+    res.status(500).json({ error: err.message });
   }
 });
-
 // --- Generic AI Proxy Handler ---
 async function aiProxy({
   req,
