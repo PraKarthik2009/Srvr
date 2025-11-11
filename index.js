@@ -88,7 +88,7 @@ app.post("/hyperbeam/profile/create", async (req, res) => {
   try {
     const name = req.body.name || "persistent-default";
 
-    const response = await fetch("https://engine.hyperbeam.com/v0/profiles", {
+    const response = await fetch("https://engine.hyperbeam.com/v0/profile", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
