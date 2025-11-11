@@ -88,7 +88,7 @@ app.post("/hyperbeam/profile/create", async (req, res) => {
   try {
     const name = req.body.name || "persistent-default";
 
-    const response = await fetch("https://engine.hyperbeam.com/v0/profile", {
+    const response = await fetch("https://engine.hyperbeam.com/v0/profiles", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
@@ -97,14 +97,15 @@ app.post("/hyperbeam/profile/create", async (req, res) => {
       body: JSON.stringify({ name }),
     });
 
-    const text = await response.text(); // read raw text first
+    const text = await response.text(); // read raw text
     let data;
     try {
-      data = JSON.parse(text); // try parse JSON
+      data = JSON.parse(text);
     } catch {
       data = { raw: text, message: "Non-JSON or empty response from Hyperbeam" };
     }
 
+    console.log("Profile create response:", data); // 👈 watch this on Render logs
     res.status(response.status).json(data);
   } catch (err) {
     console.error("Profile create error:", err);
