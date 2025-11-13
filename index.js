@@ -52,18 +52,15 @@ app.post("/hyperbeam/delete", async (req, res) => {
 });
 
 // ✅ Hyperbeam - Create or restore session (profile-based)
+// ✅ Hyperbeam persistent session (using session_id)
 app.post("/hyperbeam/create", async (req, res) => {
   try {
-    const profileId = req.body.profile_id || null; // from frontend (clipboard/cookie)
+    const sessionId = req.body.session_id || null;
 
-    // payload for Hyperbeam API
-    const payload = {
-      name: "persistent-session",
-      size: "small",
-    };
-
-    // if profile_id provided, attach it to reuse the same environment
-    if (profileId) payload.profile_id = profileId;
+    // if session_id is passed, resume existing session
+    const payload = sessionId
+      ? { profile: sessionId }
+      : { profile: true }; // true = create new persistent profile
 
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
@@ -75,10 +72,13 @@ app.post("/hyperbeam/create", async (req, res) => {
     });
 
     const data = await response.json();
-    console.log("Hyperbeam session create response:", data);
+
+    console.log("✅ Hyperbeam session response:", data);
+
+    // return session info to client
     res.json(data);
   } catch (err) {
-    console.error("Hyperbeam create error:", err);
+    console.error("❌ Hyperbeam create error:", err);
     res.status(500).send(err.toString());
   }
 });
