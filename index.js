@@ -52,66 +52,33 @@ app.post("/hyperbeam/delete", async (req, res) => {
 });
 
 // ✅ Hyperbeam - Create or restore session (profile-based)
-// ✅ Hyperbeam persistent session (using session_id)
 app.post("/hyperbeam/create", async (req, res) => {
   try {
-    const sessionId = req.body.session_id || null;
-
-    // if session_id is passed, resume existing session
-    const payload = sessionId
-      ? { profile: sessionId }
-      : { profile: true }; // true = create new persistent profile
-
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        // NO PROFILE — because your key doesn't support it
+        timeout: { offline: 10 },
+        ublock: true,
+      }),
     });
 
     const data = await response.json();
+    console.log("Hyperbeam session response:", data);
 
-    console.log("✅ Hyperbeam session response:", data);
-
-    // return session info to client
     res.json(data);
   } catch (err) {
-    console.error("❌ Hyperbeam create error:", err);
+    console.error("Hyperbeam create error:", err);
     res.status(500).send(err.toString());
   }
 });
 
 // ✅ Hyperbeam - Create profile (unchanged)
-app.post("/hyperbeam/profile/create", async (req, res) => {
-  try {
-    const name = req.body.name || "persistent-default";
 
-    const response = await fetch("https://engine.hyperbeam.com/v0/profile", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    });
-
-    const text = await response.text(); // read raw text
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = { raw: text, message: "Non-JSON or empty response from Hyperbeam" };
-    }
-
-    console.log("Profile create response:", data); // 👈 watch this on Render logs
-    res.status(response.status).json(data);
-  } catch (err) {
-    console.error("Profile create error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
 // --- Generic AI Proxy Handler ---
 async function aiProxy({
   req,
