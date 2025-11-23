@@ -62,7 +62,6 @@ app.post("/hyperbeam/create", async (req, res) => {
       },
       body: JSON.stringify({
         // NO PROFILE — because your key doesn't support it
-        timeout: { offline: 10 },
         ublock: true,
       }),
     });
